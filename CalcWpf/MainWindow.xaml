@@ -1,0 +1,87 @@
+﻿<Window x:Class="CalcWpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CalcWpf"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="600">
+    <Window.DataContext>
+        <local:vmCalc x:Name="VM"/>
+    </Window.DataContext>
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static local:Commands.NumCmd}" Executed="NumCmd_Executed" CanExecute="NumCmd_CanExecute"/>
+        <CommandBinding Command="{x:Static local:Commands.ClearCmd}" Executed="ClearCmd_Executed" CanExecute="AlwaysCanExecute"/>
+        <CommandBinding Command="{x:Static local:Commands.DotCmd}" Executed="DotCmd_Executed" CanExecute="AlwaysCanExecute"/>
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Command="{x:Static local:Commands.NumCmd}"
+                     CommandParameter="1"
+                     Key="D1"/>
+        <KeyBinding Command="{x:Static local:Commands.NumCmd}"
+                     CommandParameter="2"
+                     Key="D2"/>
+        <KeyBinding Command="{x:Static local:Commands.NumCmd}"
+                     CommandParameter="3"
+                     Key="D3"/>
+        <KeyBinding Command="{x:Static local:Commands.NumCmd}"
+                     CommandParameter="4"
+                     Key="D4"/>
+        <KeyBinding Command="{x:Static local:Commands.NumCmd}"
+                     CommandParameter="5"
+                     Key="D5"/>
+        <KeyBinding Command="{x:Static local:Commands.NumCmd}"
+                     CommandParameter="6"
+                     Key="D6"/>
+        <KeyBinding Command="{x:Static local:Commands.NumCmd}"
+                     CommandParameter="7"
+                     Key="D7"/>
+        <KeyBinding Command="{x:Static local:Commands.NumCmd}"
+                     CommandParameter="8"
+                     Key="D8"/>
+        <KeyBinding Command="{x:Static local:Commands.NumCmd}"
+                     CommandParameter="9"
+                     Key="D9"/>
+        <KeyBinding Command="{x:Static local:Commands.ClearCmd}"
+                     Key="Esc"/>
+        <KeyBinding Command="{x:Static local:Commands.ClearCmd}"
+                     Key="Delete"/>
+        <KeyBinding Command="{x:Static local:Commands.DotCmd}"
+                     Key="Decimal"/>
+        <KeyBinding Command="{x:Static local:Commands.DotCmd}"
+                     Key="Separator"/>
+    </Window.InputBindings>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBox x:Name="Table" Grid.ColumnSpan="3" Margin="2" VerticalContentAlignment="Center" FontSize="36" TextWrapping="NoWrap" Text="{Binding CurrentNumber.StrValue}"/>
+        <Button Content="1" x:Name="B1" Grid.Column="0" Grid.Row="1" Margin="2" FontSize="36" Command="{x:Static local:Commands.NumCmd}" CommandParameter="1"/>
+        <Button Content="2" x:Name="B2" Grid.Column="1" Grid.Row="1" Margin="2" FontSize="36" Command="{x:Static local:Commands.NumCmd}" CommandParameter="2"/>
+        <Button Content="3" x:Name="B3" Grid.Column="2" Grid.Row="1" Margin="2" FontSize="36" Command="{x:Static local:Commands.NumCmd}" CommandParameter="3"/>
+        <Button Content="4" x:Name="B4" Grid.Column="0" Grid.Row="2" Margin="2" FontSize="36" Command="{x:Static local:Commands.NumCmd}" CommandParameter="4"/>
+        <Button Content="5" x:Name="B5" Grid.Column="1" Grid.Row="2" Margin="2" FontSize="36" Command="{x:Static local:Commands.NumCmd}" CommandParameter="5"/>
+        <Button Content="6" x:Name="B6" Grid.Column="2" Grid.Row="2" Margin="2" FontSize="36" Command="{x:Static local:Commands.NumCmd}" CommandParameter="6"/>
+        <Button Content="7" x:Name="B7" Grid.Column="0" Grid.Row="3" Margin="2" FontSize="36" Command="{x:Static local:Commands.NumCmd}" CommandParameter="7"/>
+        <Button Content="8" x:Name="B8" Grid.Column="1" Grid.Row="3" Margin="2" FontSize="36" Command="{x:Static local:Commands.NumCmd}" CommandParameter="8"/>
+        <Button Content="9" x:Name="B9" Grid.Column="2" Grid.Row="3" Margin="2" FontSize="36" Command="{x:Static local:Commands.NumCmd}" CommandParameter="9"/>
+        <Button Content="0" x:Name="B0" Grid.Column="1" Grid.Row="4" Margin="2" FontSize="36" Command="{x:Static local:Commands.NumCmd}" CommandParameter="0"/>
+        <Button Content="." x:Name="BDot" Grid.Column="2" Grid.Row="4" Margin="2" FontSize="36" Command="{x:Static local:Commands.DotCmd}"/>
+        <Button Content="=" x:Name="BCalc" Grid.Column="3" Grid.Row="0" Margin="2" FontSize="36"/>
+        <Button Content="+" x:Name="BPlus" Grid.Column="3" Grid.Row="1" Margin="2" FontSize="36"/>
+        <Button Content="–" x:Name="BMinus" Grid.Column="3" Grid.Row="2" Margin="2" FontSize="36"/>
+        <Button Content="/" x:Name="BDiv" Grid.Column="3" Grid.Row="3" Margin="2" FontSize="36"/>
+        <Button Content="*" x:Name="BMult" Grid.Column="3" Grid.Row="4" Margin="2" FontSize="36"/>
+        <Button Content="C" x:Name="BCancel" Grid.Column="0" Grid.Row="4" Margin="2" FontSize="36" Command="{x:Static local:Commands.ClearCmd}"/>
+    </Grid>
+</Window>
