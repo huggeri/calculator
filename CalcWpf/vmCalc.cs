@@ -1,60 +1,125 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Globalization;
 
 namespace CalcWpf
 {
-    internal class vmCalc : INotifyPropertyChanged
-    {
-        private Operation _operation = Operation.None;
+	internal class vmCalc : INotifyPropertyChanged
+	{
+		private Operation _storedOperation = Operation.None;
+		private Operation _lastOperation = Operation.None;
 
-        private static readonly PropertyChangedEventArgs EA_CurrentNumber = new PropertyChangedEventArgs(nameof(CurrentNumber));
-        private Number _currentNumber;
+		private static readonly PropertyChangedEventArgs EA_DisplayNumber = new PropertyChangedEventArgs(nameof(DisplayNumber));
+		private Number _displayNumber;
 
-        public Number CurrentNumber
-        {
-            get => _currentNumber;
-            private set
-            {
-                if (_currentNumber != value)
-                {
-                    _currentNumber = value;
-                    PropertyChanged?.Invoke(this, EA_CurrentNumber);
-                }
-            }
-        }
+		public Number DisplayNumber
+		{
+			get => _displayNumber;
+			private set
+			{
+				if(_displayNumber != value)
+				{
+					_displayNumber = value;
+					PropertyChanged?.Invoke(this, EA_DisplayNumber);
+				}
+			}
+		}
 
-        internal void AddNumber(int num)
-        {
-            CurrentNumber.StrValue += num.ToString();
-        }
+		internal void AddNumber(int num)
+		{
+			ChangeDisplayNumberOnImput();
+			DisplayNumber.StrValue += num.ToString();
+		}
 
-        public Number Left { get; private set; }
+		private void ChangeDisplayNumberOnImput()
+		{
+			_lastOperation = Operation.None;
+			switch(_storedOperation)
+			{
+				case Operation.Plus:
+				case Operation.Minus:
+				case Operation.Div:
+				case Operation.Mult:
+					DisplayNumber = Right;
+					break;
+			}
+		}
 
-        public static readonly string Delimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+		public Number Left { get; private set; }
 
-        internal void AddDelimiter()
-        {
-            if (_currentNumber.StrValue.Contains(Delimiter))
-            {
-                return;
-            }
-            _currentNumber.StrValue += Delimiter;
-        }
+		public static readonly string Delimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
-        public Number Right { get; private set; }
+		internal void AddDelimiter()
+		{
+			ChangeDisplayNumberOnImput();
+			if(_displayNumber.StrValue.Contains(Delimiter))
+			{
+				return;
+			}
+			_displayNumber.StrValue += Delimiter;
+		}
 
-        public vmCalc()
-        {
-            CurrentNumber = Left = new Number();
-            Right = new Number();
-        }
+		public Number Right { get; private set; }
 
-        internal void Clear()
-        {
-            Right.Value = 0;
-            Left.Value = 0;
-        }
+		public vmCalc()
+		{
+			DisplayNumber = Left = new Number();
+			Right = new Number();
+		}
 
-        public event PropertyChangedEventHandler PropertyChanged;
-    }
+		internal void Clear()
+		{
+			Right.Reset();
+			Left.Reset();
+			DisplayNumber = Left;
+			_lastOperation = _storedOperation = Operation.None;
+		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		internal void StoreOperation(Operation parameter)
+		{
+			_storedOperation = parameter;
+			if(ReferenceEquals(_displayNumber, Right))
+			{
+				Calc();
+			}
+			else
+			{
+				Left.CopyValue(DisplayNumber);
+			}
+		}
+
+		private void Calc()
+		{
+			Operation o = _storedOperation == Operation.None
+				? _lastOperation
+				: _storedOperation;
+			switch(o)
+			{
+				case Operation.Plus:
+					DisplayNumber.Value = Left.Value + Right.Value;
+					break;
+				case Operation.Minus:
+					DisplayNumber.Value = Left.Value - Right.Value;
+					break;
+				case Operation.Div:
+					DisplayNumber.Value = Left.Value / Right.Value;
+					break;
+				case Operation.Mult:
+					DisplayNumber.Value = Left.Value * Right.Value;
+					break;
+				default:
+					return;
+			}
+			_lastOperation = o;
+		}
+
+		internal void OnCalcPressed()
+		{
+			DisplayNumber = Left;
+			Calc();
+			_storedOperation = Operation.None;
+		}
+	}
 }
