@@ -15,6 +15,7 @@
 		<CommandBinding Command="{x:Static local:Commands.DotCmd}" Executed="DotCmd_Executed" CanExecute="AlwaysCanExecute"/>
 		<CommandBinding Command="{x:Static local:Commands.StoreOperation}" Executed="StoreOperation_Executed" CanExecute="StoreOperation_CanExecute"/>
 		<CommandBinding Command="{x:Static local:Commands.CalcCmd}" Executed="CalcCmd_Executed" CanExecute="AlwaysCanExecute"/>
+		<CommandBinding Command="{x:Static local:Commands.RemoveCmd}" Executed="RemoveCmd_Executed" CanExecute="AlwaysCanExecute"/>
 	</Window.CommandBindings>
 	<Window.InputBindings>
 		<KeyBinding Command="{x:Static local:Commands.NumCmd}"
@@ -52,9 +53,22 @@
                     Key="Decimal"/>
 		<KeyBinding Command="{x:Static local:Commands.DotCmd}"
                     Key="Separator"/>
+		<KeyBinding Command="{x:Static local:Commands.CalcCmd}"
+                    Key="Return"/>
 		<KeyBinding Command="{x:Static local:Commands.StoreOperation}"
-                    Key="OemPlus"
+                    Key="Subtract"
+					CommandParameter="{x:Static local:Operation.Minus}"/>
+		<KeyBinding Command="{x:Static local:Commands.StoreOperation}"
+                    Key="Divide"
+					CommandParameter="{x:Static local:Operation.Div}"/>
+		<KeyBinding Command="{x:Static local:Commands.StoreOperation}"
+                    Key="Add"
 					CommandParameter="{x:Static local:Operation.Plus}"/>
+		<KeyBinding Command="{x:Static local:Commands.StoreOperation}"
+                    Key="Multiply"
+					CommandParameter="{x:Static local:Operation.Mult}"/>
+		<KeyBinding Command="{x:Static local:Commands.RemoveCmd}"
+                    Key="Backspace"/>
 	</Window.InputBindings>
 	<Grid>
 		<Grid.ColumnDefinitions>
@@ -70,47 +84,47 @@
 			<RowDefinition></RowDefinition>
 			<RowDefinition></RowDefinition>
 		</Grid.RowDefinitions>
-		<Viewbox Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="2">
-			<TextBlock x:Name="Table" LineStackingStrategy="BlockLineHeight" HorizontalAlignment="Left"
-				Text="{Binding DisplayNumber.StrValue}"/>
+		<Viewbox Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="{StaticResource Margin}">
+			<TextBox x:Name="Table" HorizontalAlignment="Left" IsReadOnly="True" BorderThickness="0"
+				Text="{Binding DisplayNumber.Text, Mode=OneWay}"/>
 		</Viewbox>
-		<local:ucScalableCommnd TextValue="1" x:Name="B1" Grid.Column="0" Grid.Row="1" Margin="2"
+		<local:ucScalableCommnd TextValue="1" x:Name="B1" Grid.Column="0" Grid.Row="1" Margin="{StaticResource Margin}"
 				Command="{x:Static local:Commands.NumCmd}" CommandParameter="1"/>
-		<local:ucScalableCommnd TextValue="2" x:Name="B2" Grid.Column="1" Grid.Row="1" Margin="2"
+		<local:ucScalableCommnd TextValue="2" x:Name="B2" Grid.Column="1" Grid.Row="1" Margin="{StaticResource Margin}"
 				Command="{x:Static local:Commands.NumCmd}" CommandParameter="2"/>
-		<local:ucScalableCommnd TextValue="3" x:Name="B3" Grid.Column="2" Grid.Row="1" Margin="2" 
+		<local:ucScalableCommnd TextValue="3" x:Name="B3" Grid.Column="2" Grid.Row="1" Margin="{StaticResource Margin}" 
 				Command="{x:Static local:Commands.NumCmd}" CommandParameter="3"/>
-		<local:ucScalableCommnd TextValue="4" x:Name="B4" Grid.Column="0" Grid.Row="2" Margin="2" 
+		<local:ucScalableCommnd TextValue="4" x:Name="B4" Grid.Column="0" Grid.Row="2" Margin="{StaticResource Margin}" 
 				Command="{x:Static local:Commands.NumCmd}" CommandParameter="4"/>
-		<local:ucScalableCommnd TextValue="5" x:Name="B5" Grid.Column="1" Grid.Row="2" Margin="2" 
+		<local:ucScalableCommnd TextValue="5" x:Name="B5" Grid.Column="1" Grid.Row="2" Margin="{StaticResource Margin}" 
 				Command="{x:Static local:Commands.NumCmd}" CommandParameter="5"/>
-		<local:ucScalableCommnd TextValue="6" x:Name="B6" Grid.Column="2" Grid.Row="2" Margin="2" 
+		<local:ucScalableCommnd TextValue="6" x:Name="B6" Grid.Column="2" Grid.Row="2" Margin="{StaticResource Margin}" 
 				Command="{x:Static local:Commands.NumCmd}" CommandParameter="6"/>
-		<local:ucScalableCommnd TextValue="7" x:Name="B7" Grid.Column="0" Grid.Row="3" Margin="2" 
+		<local:ucScalableCommnd TextValue="7" x:Name="B7" Grid.Column="0" Grid.Row="3" Margin="{StaticResource Margin}" 
 				Command="{x:Static local:Commands.NumCmd}" CommandParameter="7"/>
-		<local:ucScalableCommnd TextValue="8" x:Name="B8" Grid.Column="1" Grid.Row="3" Margin="2" 
+		<local:ucScalableCommnd TextValue="8" x:Name="B8" Grid.Column="1" Grid.Row="3" Margin="{StaticResource Margin}" 
 				Command="{x:Static local:Commands.NumCmd}" CommandParameter="8"/>
-		<local:ucScalableCommnd TextValue="9" x:Name="B9" Grid.Column="2" Grid.Row="3" Margin="2" 
+		<local:ucScalableCommnd TextValue="9" x:Name="B9" Grid.Column="2" Grid.Row="3" Margin="{StaticResource Margin}" 
 				Command="{x:Static local:Commands.NumCmd}" CommandParameter="9"/>
-		<local:ucScalableCommnd TextValue="0" x:Name="B0" Grid.Column="1" Grid.Row="4" Margin="2" 
+		<local:ucScalableCommnd TextValue="0" x:Name="B0" Grid.Column="1" Grid.Row="4" Margin="{StaticResource Margin}" 
 				Command="{x:Static local:Commands.NumCmd}" CommandParameter="0"/>
-		<local:ucScalableCommnd TextValue="." x:Name="BDot" Grid.Column="2" Grid.Row="4" Margin="2" 
+		<local:ucScalableCommnd TextValue="." x:Name="BDot" Grid.Column="2" Grid.Row="4" Margin="{StaticResource Margin}" 
 				Command="{x:Static local:Commands.DotCmd}"/>
-		<local:ucScalableCommnd TextValue="=" x:Name="BCalc" Grid.Column="3" Grid.Row="0" Margin="2"
+		<local:ucScalableCommnd TextValue="=" x:Name="BCalc" Grid.Column="3" Grid.Row="0" Margin="{StaticResource Margin}"
 				Command="{x:Static local:Commands.CalcCmd}"/>
-		<local:ucScalableCommnd TextValue="+" x:Name="BPlus" Grid.Column="3" Grid.Row="1" Margin="2" 
+		<local:ucScalableCommnd TextValue="+" x:Name="BPlus" Grid.Column="3" Grid.Row="1" Margin="{StaticResource Margin}" 
 				Command="{x:Static local:Commands.StoreOperation}"
 				CommandParameter="{x:Static local:Operation.Plus}"/>
-		<local:ucScalableCommnd TextValue="–" x:Name="BMinus" Grid.Column="3" Grid.Row="2" Margin="2"
+		<local:ucScalableCommnd TextValue="–" x:Name="BMinus" Grid.Column="3" Grid.Row="2" Margin="{StaticResource Margin}"
 				Command="{x:Static local:Commands.StoreOperation}"
 				CommandParameter="{x:Static local:Operation.Minus}"/>
-		<local:ucScalableCommnd TextValue="/" x:Name="BDiv" Grid.Column="3" Grid.Row="3" Margin="2"
+		<local:ucScalableCommnd TextValue="/" x:Name="BDiv" Grid.Column="3" Grid.Row="3" Margin="{StaticResource Margin}"
 				Command="{x:Static local:Commands.StoreOperation}"
 				CommandParameter="{x:Static local:Operation.Div}"/>
-		<local:ucScalableCommnd TextValue="*" x:Name="BMult" Grid.Column="3" Grid.Row="4" Margin="2"
+		<local:ucScalableCommnd TextValue="*" x:Name="BMult" Grid.Column="3" Grid.Row="4" Margin="{StaticResource Margin}"
 				Command="{x:Static local:Commands.StoreOperation}"
 				CommandParameter="{x:Static local:Operation.Mult}"/>
-		<local:ucScalableCommnd TextValue="C" x:Name="BCancel" Grid.Column="0" Grid.Row="4" Margin="2" 
+		<local:ucScalableCommnd TextValue="C" x:Name="BCancel" Grid.Column="0" Grid.Row="4" Margin="{StaticResource Margin}" 
 				Command="{x:Static local:Commands.ClearCmd}"/>
 	</Grid>
 </Window>

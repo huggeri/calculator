@@ -4,5 +4,6 @@
              xmlns:local="clr-namespace:CalcWpf"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+		<Thickness x:Key="Margin" Bottom="2" Left="2" Right="2" Top="2"></Thickness>
     </Application.Resources>
 </Application>

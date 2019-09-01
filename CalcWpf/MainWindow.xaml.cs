@@ -27,7 +27,8 @@ namespace CalcWpf
 
         private void NumCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = int.TryParse(e?.Parameter?.ToString(), out _);
+			int tmp;
+			e.CanExecute = int.TryParse(e?.Parameter?.ToString(), out tmp);
         }
 
         private void StoreOperation_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -63,6 +64,11 @@ namespace CalcWpf
 		private void CalcCmd_Executed(object sender, ExecutedRoutedEventArgs e)
 		{
 			VM.OnCalcPressed();
+		}
+
+		private void RemoveCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+		{
+			VM.RemoveSymbol();
 		}
 	}
 }
