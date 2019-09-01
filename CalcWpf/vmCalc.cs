@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Globalization;
 
 namespace CalcWpf
@@ -14,7 +15,10 @@ namespace CalcWpf
 
 		public Number DisplayNumber
 		{
-			get => _displayNumber;
+			get
+			{
+				return _displayNumber;
+			}
 			private set
 			{
 				if(_displayNumber != value)
@@ -33,7 +37,6 @@ namespace CalcWpf
 
 		private void ChangeDisplayNumberOnImput()
 		{
-			_lastOperation = Operation.None;
 			switch(_storedOperation)
 			{
 				case Operation.Plus:
@@ -41,6 +44,9 @@ namespace CalcWpf
 				case Operation.Div:
 				case Operation.Mult:
 					DisplayNumber = Right;
+					DisplayNumber.Value = 0;
+					_lastOperation = _storedOperation;
+					_storedOperation = Operation.None;
 					break;
 			}
 		}
@@ -77,17 +83,11 @@ namespace CalcWpf
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		internal void StoreOperation(Operation parameter)
+		internal void StoreOperation(Operation operation)
 		{
-			_storedOperation = parameter;
-			if(ReferenceEquals(_displayNumber, Right))
-			{
-				Calc();
-			}
-			else
-			{
-				Left.CopyValue(DisplayNumber);
-			}
+			_storedOperation = operation;
+			Left.CopyValue(DisplayNumber);
+			DisplayNumber.Operation = operation;
 		}
 
 		private void Calc()
@@ -120,6 +120,20 @@ namespace CalcWpf
 			DisplayNumber = Left;
 			Calc();
 			_storedOperation = Operation.None;
+			Left.Operation = Operation.None;
+			Right.Operation = Operation.None;
+		}
+
+		internal void RemoveSymbol()
+		{
+			if(DisplayNumber.StrValue.Length > 1)
+			{
+				DisplayNumber.StrValue = DisplayNumber.StrValue.Remove(DisplayNumber.StrValue.Length - 1, 1);
+			}
+			else
+			{
+				DisplayNumber.Value = 0;
+			}
 		}
 	}
 }
