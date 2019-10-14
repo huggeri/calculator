@@ -27,7 +27,8 @@ namespace CalcWpf
 
         private void NumCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = int.TryParse(e?.Parameter?.ToString(), out _);
+            int result;
+            e.CanExecute = int.TryParse(e?.Parameter?.ToString(), out result);
         }
 
         private void StoreOperation_CanExecute(object sender, CanExecuteRoutedEventArgs e)

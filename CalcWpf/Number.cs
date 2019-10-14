@@ -18,7 +18,10 @@ namespace CalcWpf
 
 		public double Value
 		{
-			get => _value;
+			get
+            {
+                return _value;
+            }
 			set
 			{
 				if(value != _value)
@@ -33,10 +36,15 @@ namespace CalcWpf
 
 		public string StrValue
 		{
-			get => _strValue;
+			get
+            {
+                return _strValue;
+            }
 			set
 			{
-				if(string.IsNullOrEmpty(value))
+                double val;
+
+                if (string.IsNullOrEmpty(value))
 				{
 					return;
 				}
@@ -45,7 +53,7 @@ namespace CalcWpf
 					value = value.TrimStart('0');
 				}
 				if(value != _strValue
-					&& double.TryParse(value, out double val))
+					&& double.TryParse(value, out val))
 				{
 					_strValue = value;
 					_value = val;

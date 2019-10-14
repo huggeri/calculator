@@ -14,7 +14,10 @@ namespace CalcWpf
 
 		public Number DisplayNumber
 		{
-			get => _displayNumber;
+			get
+            {
+                return _displayNumber;
+            }
 			private set
 			{
 				if(_displayNumber != value)
@@ -33,7 +36,7 @@ namespace CalcWpf
 
 		private void ChangeDisplayNumberOnImput()
 		{
-			_lastOperation = Operation.None;
+            _lastOperation = Operation.None;
 			switch(_storedOperation)
 			{
 				case Operation.Plus:
@@ -79,15 +82,26 @@ namespace CalcWpf
 
 		internal void StoreOperation(Operation parameter)
 		{
-			_storedOperation = parameter;
+            if (_storedOperation == Operation.None)
+            {
+                _storedOperation = parameter;
+            }
+
 			if(ReferenceEquals(_displayNumber, Right))
 			{
 				Calc();
-			}
+
+                if (_storedOperation == _lastOperation)
+                {
+                    _storedOperation = parameter;
+                    Right.Reset();
+                }
+            }
 			else
 			{
 				Left.CopyValue(DisplayNumber);
-			}
+                Right.Reset();
+            }
 		}
 
 		private void Calc()
@@ -95,7 +109,10 @@ namespace CalcWpf
 			Operation o = _storedOperation == Operation.None
 				? _lastOperation
 				: _storedOperation;
-			switch(o)
+
+            DisplayNumber = Left;
+
+            switch (o)
 			{
 				case Operation.Plus:
 					DisplayNumber.Value = Left.Value + Right.Value;
@@ -112,14 +129,13 @@ namespace CalcWpf
 				default:
 					return;
 			}
-			_lastOperation = o;
+            _lastOperation = o;
 		}
 
 		internal void OnCalcPressed()
 		{
-			DisplayNumber = Left;
 			Calc();
 			_storedOperation = Operation.None;
-		}
+        }
 	}
 }
