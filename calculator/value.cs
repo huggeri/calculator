@@ -2,14 +2,14 @@
 
 namespace calculator
 {
-// класс для любого значения в калькуляторе
+    // класс для любого значения в калькуляторе
     public class Value
     {
         private
-            string stringNumber;
+            string numberString;
             double val;
 
-        //конструкторы
+        // конструкторы
         public 
             Value() : this("0")
             {
@@ -17,29 +17,12 @@ namespace calculator
 
             Value(string n)
             {
-                stringNumber = n;
-
-                if(n == "")
-                {
-                    val = 0;
-                }
-                else
-                {
-                    try
-                    {
-                        val = Convert.ToDouble(n);
-                    }
-                    catch(Exception)
-                    {
-                        throwingException();
-                    }
-                }
+                NumberString = n;
             }
 
             Value(double n)
             {
-                val = n;
-                stringNumber = Convert.ToString(n);
+                Val = n;
             }
 
         // свойства
@@ -48,7 +31,7 @@ namespace calculator
             set
             {
                 val = value;
-                stringNumber = Convert.ToString(value);
+                numberString = Convert.ToString(value);
             }
 
             get
@@ -57,11 +40,11 @@ namespace calculator
             }
         }
 
-        public string StringNumber
+        public string NumberString
         {
             set
             {
-                stringNumber = value;
+                numberString = value;
 
                 if (value == "")
                 {
@@ -75,26 +58,18 @@ namespace calculator
                     }
                     catch(Exception)
                     {
-                        throwingException();
+                        val = 0;
                     }
                 }
             }
 
             get
             {
-                return stringNumber;
+                return numberString;
             }
         }
 
         // методы
-        // выкидывающий исключение
-        private void throwingException()
-        {
-            val = -1;
-            stringNumber = "error, please push c";
-            throw new Exception();
-        }
-
         // сложение
         public static Value operator +(Value obj1, Value obj2)
         {
@@ -120,19 +95,19 @@ namespace calculator
         }
 
         // взятие корней
-        public Value GetRadical(Value number, int n)
+        public Value GetRadical(Value n)
         {
             Value result = new Value();
 
-            if (number.Val > 0)
+            if (this.Val > 0 && n.Val <= 1000.0 && n.Val > 0.0)
             {
-                if (n == 2)
+                if (Math.Truncate(n.Val) == 2.0)
                 {
-                    result.Val = Math.Sqrt(number.Val);
+                    result.Val = Math.Sqrt(this.Val);
                 }
                 else
                 {
-                    result.Val = Math.Pow(number.Val, 1.0 / 3.0);
+                    result.Val = Math.Pow(this.Val, 1.0 / Math.Truncate(n.Val));
                 }
             }
 
@@ -140,34 +115,43 @@ namespace calculator
         }
 
         // возведение в степень
-        public Value ToPow(Value number, Value n)
+        public Value ToPow(Value n)
         {
-            return new Value(Math.Pow(number.Val, n.Val));
+            if (n.Val > 1000.0 || n.Val < 0)
+                n.Val = 0;
+            return new Value(Math.Pow(this.Val, Math.Truncate(n.Val)));
         }
 
         // факториал
         public Value Factorial(Value number)
         {
             Value result = new Value();
-            int subVal = 0;
+            double subVal = 0;
 
             try
             {
-                subVal = Int32.Parse(number.StringNumber);
-            }
-            catch(Exception)
-            {
-                throwingException();
-            }
-
-            if (subVal > 0)
-            {
-                for (int i = subVal - 1; i > 0; i--)
+                if (number.Val <= 1000.0)
                 {
-                    subVal *= i;
+                    if (number.Val >= 2.0)
+                    {
+                        subVal = Math.Truncate(number.Val);
+
+                        for (double i = subVal - 1.0; i > 0; i--)
+                        {
+                            subVal *= i;
+                        }
+                    }
+                    else if (number.Val >= 0)
+                    {
+                        subVal = 1;
+                    }
                 }
 
                 result.Val = subVal;
+            }
+            catch (Exception)
+            {
+                result.Val = 0;
             }
 
             return result;

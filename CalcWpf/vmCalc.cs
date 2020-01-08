@@ -6,11 +6,20 @@ namespace CalcWpf
 {
 	internal class vmCalc : INotifyPropertyChanged
 	{
+        // FIELDS
+
 		private Operation _storedOperation = Operation.None;
 		private Operation _lastOperation = Operation.None;
-
 		private static readonly PropertyChangedEventArgs EA_DisplayNumber = new PropertyChangedEventArgs(nameof(DisplayNumber));
 		private Number _displayNumber;
+
+		public static readonly string Delimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+		public event PropertyChangedEventHandler PropertyChanged;
+
+        // PROPERTIES
+
+		public Number Left { get; private set; }
+		public Number Right { get; private set; }
 
 		public Number DisplayNumber
 		{
@@ -28,11 +37,7 @@ namespace CalcWpf
 			}
 		}
 
-		internal void AddNumber(int num)
-		{
-			ChangeDisplayNumberOnImput();
-			DisplayNumber.StrValue += num.ToString();
-		}
+        // METHODS
 
 		private void ChangeDisplayNumberOnImput()
 		{
@@ -46,62 +51,6 @@ namespace CalcWpf
 					DisplayNumber = Right;
 					break;
 			}
-		}
-
-		public Number Left { get; private set; }
-
-		public static readonly string Delimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-
-		internal void AddDelimiter()
-		{
-			ChangeDisplayNumberOnImput();
-			if(_displayNumber.StrValue.Contains(Delimiter))
-			{
-				return;
-			}
-			_displayNumber.StrValue += Delimiter;
-		}
-
-		public Number Right { get; private set; }
-
-		public vmCalc()
-		{
-			DisplayNumber = Left = new Number();
-			Right = new Number();
-		}
-
-		internal void Clear()
-		{
-			Right.Reset();
-			Left.Reset();
-			DisplayNumber = Left;
-			_lastOperation = _storedOperation = Operation.None;
-		}
-
-		public event PropertyChangedEventHandler PropertyChanged;
-
-		internal void StoreOperation(Operation parameter)
-		{
-            if (_storedOperation == Operation.None)
-            {
-                _storedOperation = parameter;
-            }
-
-			if(ReferenceEquals(_displayNumber, Right))
-			{
-				Calc();
-
-                if (_storedOperation == _lastOperation)
-                {
-                    _storedOperation = parameter;
-                    Right.Reset();
-                }
-            }
-			else
-			{
-				Left.CopyValue(DisplayNumber);
-                Right.Reset();
-            }
 		}
 
 		private void Calc()
@@ -132,10 +81,66 @@ namespace CalcWpf
             _lastOperation = o;
 		}
 
+		internal void AddNumber(int num)
+		{
+			ChangeDisplayNumberOnImput();
+			DisplayNumber.StrValue += num.ToString();
+		}
+
+		internal void AddDelimiter()
+		{
+			ChangeDisplayNumberOnImput();
+			if(_displayNumber.StrValue.Contains(Delimiter))
+			{
+				return;
+			}
+			_displayNumber.StrValue += Delimiter;
+		}
+
 		internal void OnCalcPressed()
 		{
 			Calc();
 			_storedOperation = Operation.None;
         }
+
+		internal void Clear()
+		{
+			Right.Reset();
+			Left.Reset();
+			DisplayNumber = Left;
+			_lastOperation = _storedOperation = Operation.None;
+		}
+
+		internal void StoreOperation(Operation parameter)
+		{
+            if (_storedOperation == Operation.None)
+            {
+                _storedOperation = parameter;
+            }
+
+			if(ReferenceEquals(_displayNumber, Right))
+			{
+				Calc();
+
+                if (_storedOperation == _lastOperation)
+                {
+                    _storedOperation = parameter;
+                    Right.Reset();
+                }
+            }
+			else
+			{
+				Left.CopyValue(DisplayNumber);
+                Right.Reset();
+            }
+		}
+
+        // CONSTRUCTOR
+
+        public vmCalc()
+		{
+			DisplayNumber = Left = new Number();
+			Right = new Number();
+		}
 	}
 }

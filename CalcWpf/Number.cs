@@ -3,18 +3,19 @@ using System.ComponentModel;
 
 namespace CalcWpf
 {
+    // ANY VALUE IN PROGRAM
 	internal class Number : INotifyPropertyChanged
 	{
-		public Number(double number = 0d)
-		{
-			_value = number;
-			_strValue = number.ToString();
-		}
+        // FIELDS
 
 		private static readonly PropertyChangedEventArgs EA_Value = new PropertyChangedEventArgs(nameof(Value));
 		private static readonly PropertyChangedEventArgs EA_StrValue = new PropertyChangedEventArgs(nameof(StrValue));
 		private double _value;
 		private string _strValue;
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+        // PROPERTIES
 
 		public double Value
 		{
@@ -34,7 +35,7 @@ namespace CalcWpf
 			}
 		}
 
-		public string StrValue
+        public string StrValue
 		{
 			get
             {
@@ -63,16 +64,23 @@ namespace CalcWpf
 			}
 		}
 
-		public event PropertyChangedEventHandler PropertyChanged;
-
+        // FROM TEXTBOX INTO NUMBER
 		internal void CopyValue(Number displayNumber)
 		{
 			Value = displayNumber.Value;
 		}
 
+        // NUMBER = 0
 		internal void Reset()
 		{
 			Value = 0;
+		}
+
+        // CONSTRUCTOR
+		public Number(double number = 0d)
+		{
+			_value = number;
+			_strValue = number.ToString();
 		}
 	}
 }
