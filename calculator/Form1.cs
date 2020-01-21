@@ -124,6 +124,16 @@ namespace calculator
         {
             clickOnOperation(7);
         }
+        
+        private void oneDividedByN_Click(object sender, EventArgs e)
+        {
+            clickOnOperation(8);
+        }
+        
+        private void open_Click(object sender, EventArgs e)
+        {
+            clickOnOperation(8);
+        }
 
         private void getResult_Click(object sender, EventArgs e)
         {
@@ -133,7 +143,7 @@ namespace calculator
 
         private void getRes()
         {
-            if (numberOfOperation > 0 && numberOfOperation != 7)
+            if (numberOfOperation > 0 && numberOfOperation < 7)
             {
                 if (!isEqualityPushed)
                     getDataFromTextBox(secondNumber);
@@ -166,6 +176,9 @@ namespace calculator
                     case 7:
                         firstNumber = firstNumber.Factorial(firstNumber);
                         break;
+                    case 8:
+                        firstNumber = 1 / firstNumber;
+                        break;
                 }
                 setDataIntoTheTextBox(firstNumber.NumberString);
             }
@@ -175,7 +188,7 @@ namespace calculator
         {
             // выполнение предыдущей операции из памяти, если есть
             // для факториала нужно нажать на кнопку равенства
-            if (numberOfOperation > 0 && !isEqualityPushed && operationNumber != 7)
+            if (numberOfOperation > 0 && !isEqualityPushed && operationNumber < 7)
             {
                 getRes();
             }
@@ -185,8 +198,8 @@ namespace calculator
             numberOfOperation = operationNumber;
             isEqualityPushed = false;
 
-            // у факториала нет второго операнда
-            if (numberOfOperation == 7)
+            // у факториала и др. нет второго операнда
+            if (numberOfOperation >= 7)
             {
                 getRes();
                 // сброс, чтобы работать с результатом вычислений
