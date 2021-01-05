@@ -94,6 +94,12 @@ namespace calculator
             return new Value(obj1.Val / obj2.Val);
         }
 
+        // деление int на Value
+        public static Value operator /(int op1, Value op2)
+        {
+            return new Value(op1 / op2.Val);
+        }
+
         // взятие корней
         public Value GetRadical(Value n)
         {
